@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import type { TravelPreferences, TravelSuggestion } from '../types';
 import { SparklesIcon } from './icons/SparklesIcon';
 
@@ -27,6 +27,9 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion
   const [budget, setBudget] = useState<number | ''>('');
   const [travelerType, setTravelerType] = useState<'sozinho' | 'casal' | 'família' | 'amigos' | ''>('');
 
+  const [isInterestsDropdownOpen, setIsInterestsDropdownOpen] = useState(false);
+  const interestsInputRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (suggestion) {
       setDestination(suggestion.destination);
@@ -36,13 +39,30 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion
     }
   }, [suggestion, onSuggestionApplied]);
 
-  const handleInterestChange = (interest: string) => {
+  const handleInterestToggle = (interest: string) => {
     setInterests(prev =>
       prev.includes(interest)
         ? prev.filter(i => i !== interest)
         : [...prev, interest]
     );
   };
+
+  const handleRemoveInterest = (interestToRemove: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setInterests(prev => prev.filter(i => i !== interestToRemove));
+  };
+  
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+        if (interestsInputRef.current && !interestsInputRef.current.contains(event.target as Node)) {
+            setIsInterestsDropdownOpen(false);
+        }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -105,37 +125,60 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion
           </div>
         </div>
         
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">Principais Interesses</label>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-            {interestsOptions.map(interest => (
-              <label key={interest} className="flex items-center space-x-2 cursor-pointer p-2 rounded-md transition-colors duration-200 hover:bg-blue-50">
-                  <div className="relative">
-                      <input
-                          type="checkbox"
-                          checked={interests.includes(interest)}
-                          onChange={() => handleInterestChange(interest)}
-                          className="peer absolute left-0 top-0 w-4 h-4 opacity-0 cursor-pointer"
-                      />
-                      <div className="w-4 h-4 border border-gray-300 rounded-sm bg-white flex shrink-0 justify-center items-center peer-checked:bg-blue-600 peer-checked:border-blue-600 peer-focus:ring-2 peer-focus:ring-offset-2 peer-focus:ring-blue-500 transition-colors">
-                          <svg
-                              className="w-3 h-3 text-white hidden peer-checked:block pointer-events-none"
-                              xmlns="http://www.w3.org/2000/svg"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                          >
-                              <polyline points="20 6 9 17 4 12" />
-                          </svg>
-                      </div>
-                  </div>
-                  <span className="text-sm text-gray-700 select-none">{interest}</span>
-              </label>
-            ))}
-          </div>
+        <div className="relative" ref={interestsInputRef}>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Principais Interesses</label>
+            <button
+                type="button"
+                onClick={() => setIsInterestsDropdownOpen(prev => !prev)}
+                className="w-full flex flex-wrap gap-2 p-2 border border-gray-300 rounded-md shadow-sm bg-white cursor-pointer min-h-[42px] items-center text-left focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                aria-haspopup="listbox"
+                aria-expanded={isInterestsDropdownOpen}
+            >
+                {interests.length > 0 ? (
+                    interests.map(interest => (
+                        <span key={interest} className="flex items-center bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full">
+                            {interest}
+                            <button
+                                type="button"
+                                onClick={(e) => handleRemoveInterest(interest, e)}
+                                className="ml-1.5 -mr-1 flex-shrink-0 h-4 w-4 rounded-full inline-flex items-center justify-center text-blue-600 hover:bg-blue-200 hover:text-blue-800 focus:outline-none focus:bg-blue-500 focus:text-white"
+                                aria-label={`Remover ${interest}`}
+                            >
+                                <span className="sr-only">Remover {interest}</span>
+                                <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
+                                    <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
+                                </svg>
+                            </button>
+                        </span>
+                    ))
+                ) : (
+                    <span className="text-gray-500 px-1">Selecione um ou mais interesses...</span>
+                )}
+            </button>
+            {isInterestsDropdownOpen && (
+                <div className="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto focus:outline-none" role="listbox">
+                    <ul className="py-1">
+                        {interestsOptions.map(option => (
+                            <li
+                                key={option}
+                                onClick={() => handleInterestToggle(option)}
+                                className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center justify-between text-gray-900"
+                                role="option"
+                                aria-selected={interests.includes(option)}
+                            >
+                                <span className={`${interests.includes(option) ? 'font-semibold' : 'font-normal'}`}>
+                                    {option}
+                                </span>
+                                {interests.includes(option) && (
+                                    <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                                    </svg>
+                                )}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div>
         
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-gray-200">

@@ -8,12 +8,10 @@ import MarkdownRenderer from './components/MarkdownRenderer';
 import { SparklesIcon } from './components/icons/SparklesIcon';
 import { ShareIcon } from './components/icons/ShareIcon';
 import { CopyIcon } from './components/icons/CopyIcon';
-import { ImageIcon } from './components/icons/ImageIcon';
 import { MapPinIcon } from './components/icons/MapPinIcon';
 import SuggestionCards from './components/SuggestionCards';
 import ItineraryMap from './components/ItineraryMap';
 
-declare const html2canvas: any;
 declare const jspdf: any;
 
 const App: React.FC = () => {
@@ -67,24 +65,6 @@ const App: React.FC = () => {
       alert('Não foi possível copiar o roteiro. Tente manualmente.');
     });
   }, [itinerary, itineraryRef]);
-
-  const handleDownloadImage = useCallback(() => {
-    if (!itineraryRef.current) return;
-    
-    html2canvas(itineraryRef.current, {
-        useCORS: true,
-        scale: 2, 
-        backgroundColor: '#ffffff'
-    }).then((canvas: HTMLCanvasElement) => {
-        const link = document.createElement('a');
-        link.download = 'roteiro-de-viagem.png';
-        link.href = canvas.toDataURL('image/png');
-        link.click();
-    }).catch((err: Error) => {
-        console.error("Erro ao gerar imagem: ", err);
-        alert("Desculpe, ocorreu um erro ao gerar a imagem do roteiro.");
-    });
-  }, [itineraryRef]);
 
   const handleSharePdf = useCallback(async () => {
     if (!itinerary || !lastPreferences) return;
@@ -253,14 +233,6 @@ const App: React.FC = () => {
                         disabled={copyStatus === 'copied'}
                     >
                         <CopyIcon className="w-5 h-5" />
-                    </button>
-                    <button
-                        onClick={handleDownloadImage}
-                        title="Salvar como Imagem (PNG)"
-                        className="p-2 rounded-full text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        aria-label="Salvar como Imagem (PNG)"
-                    >
-                        <ImageIcon className="w-5 h-5" />
                     </button>
                     <button
                         onClick={handleSharePdf}
