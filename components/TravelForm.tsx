@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
-import type { TravelPreferences } from '../types';
+import React, { useState, useEffect } from 'react';
+import type { TravelPreferences, TravelSuggestion } from '../types';
 import { SparklesIcon } from './icons/SparklesIcon';
 
 interface TravelFormProps {
   onSubmit: (preferences: TravelPreferences) => void;
   isLoading: boolean;
+  suggestion: TravelSuggestion | null;
+  onSuggestionApplied: () => void;
 }
 
 const interestsOptions = [
@@ -17,13 +19,22 @@ const months = [
 ];
 
 
-const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading }) => {
+const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion, onSuggestionApplied }) => {
   const [destination, setDestination] = useState('');
   const [duration, setDuration] = useState<number>(3);
   const [interests, setInterests] = useState<string[]>([]);
   const [month, setMonth] = useState('');
   const [budget, setBudget] = useState<number | ''>('');
   const [travelerType, setTravelerType] = useState<'sozinho' | 'casal' | 'família' | 'amigos' | ''>('');
+
+  useEffect(() => {
+    if (suggestion) {
+      setDestination(suggestion.destination);
+      setDuration(suggestion.duration);
+      setInterests(suggestion.interests);
+      onSuggestionApplied();
+    }
+  }, [suggestion, onSuggestionApplied]);
 
   const handleInterestChange = (interest: string) => {
     setInterests(prev =>

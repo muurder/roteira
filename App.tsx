@@ -1,5 +1,6 @@
+
 import React, { useState, useCallback, useRef } from 'react';
-import type { TravelPreferences, ItineraryResult } from './types';
+import type { TravelPreferences, ItineraryResult, TravelSuggestion } from './types';
 import { generateItinerary } from './services/geminiService';
 import Header from './components/Header';
 import TravelForm from './components/TravelForm';
@@ -8,8 +9,9 @@ import { SparklesIcon } from './components/icons/SparklesIcon';
 import { ShareIcon } from './components/icons/ShareIcon';
 import { CopyIcon } from './components/icons/CopyIcon';
 import { ImageIcon } from './components/icons/ImageIcon';
-import { RedoIcon } from './components/icons/RedoIcon';
 import { MapPinIcon } from './components/icons/MapPinIcon';
+import SuggestionCards from './components/SuggestionCards';
+import ItineraryMap from './components/ItineraryMap';
 
 declare const html2canvas: any;
 declare const jspdf: any;
@@ -20,7 +22,9 @@ const App: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
   const [lastPreferences, setLastPreferences] = useState<TravelPreferences | null>(null);
+  const [selectedSuggestion, setSelectedSuggestion] = useState<TravelSuggestion | null>(null);
   const itineraryRef = useRef<HTMLDivElement>(null);
+  const formRef = useRef<HTMLDivElement>(null);
 
   const handleFormSubmit = useCallback(async (preferences: TravelPreferences) => {
     setIsLoading(true);
@@ -198,62 +202,69 @@ const App: React.FC = () => {
     }
   }, [itinerary, lastPreferences]);
 
+  const handleSuggestionSelect = useCallback((suggestion: TravelSuggestion) => {
+    setSelectedSuggestion(suggestion);
+    formRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100/50 font-sans text-gray-800 antialiased">
       <Header />
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
-          <TravelForm onSubmit={handleFormSubmit} isLoading={isLoading} />
+          <div ref={formRef}>
+            <TravelForm
+              onSubmit={handleFormSubmit}
+              isLoading={isLoading}
+              suggestion={selectedSuggestion}
+              onSuggestionApplied={() => setSelectedSuggestion(null)}
+            />
+          </div>
 
           <div className="mt-12">
-            {isLoading && (
+            {isLoading ? (
               <div className="flex flex-col items-center justify-center text-center p-8 bg-white rounded-lg shadow-md border border-gray-200">
                 <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                 <p className="mt-4 text-lg font-semibold text-gray-700">Criando seu roteiro mágico...</p>
                 <p className="text-gray-500">Isso pode levar alguns segundos.</p>
               </div>
-            )}
-
-            {error && (
+            ) : error ? (
               <div className="p-6 bg-red-100 border border-red-300 text-red-800 rounded-lg shadow-md text-center">
                 <h3 className="font-bold text-lg mb-2">Ops! Algo deu errado.</h3>
                 <p>{error}</p>
               </div>
-            )}
-
-            {itinerary && !isLoading && (
-              <div className="relative bg-white rounded-lg shadow-xl border border-gray-200 animate-fade-in">
+            ) : itinerary ? (
+              <div className="bg-white rounded-lg shadow-xl border border-gray-200 animate-fade-in">
                  <div className="sticky top-0 z-10 flex items-center justify-end space-x-1 sm:space-x-2 p-2 bg-gray-50/80 backdrop-blur-sm border-b border-gray-200 rounded-t-lg">
                     <button
                         onClick={handleRegenerate}
-                        title="Refazer Roteiro"
+                        title="Gerar novo roteiro com IA"
                         className="p-2 rounded-full text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        aria-label="Refazer Roteiro"
+                        aria-label="Gerar novo roteiro com IA"
                         disabled={!lastPreferences}
                     >
-                        <RedoIcon className="w-5 h-5" />
+                        <SparklesIcon className="w-5 h-5" />
                     </button>
                     <button
                         onClick={handleCopyText}
-                        title={copyStatus === 'copied' ? 'Copiado!' : 'Copiar Texto'}
+                        title={copyStatus === 'copied' ? 'Copiado!' : 'Copiar para área de transferência'}
                         className="p-2 rounded-full text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50"
-                        aria-label="Copiar Texto"
+                        aria-label="Copiar para área de transferência"
                         disabled={copyStatus === 'copied'}
                     >
                         <CopyIcon className="w-5 h-5" />
                     </button>
                     <button
                         onClick={handleDownloadImage}
-                        title="Baixar como Imagem (PNG)"
+                        title="Salvar como Imagem (PNG)"
                         className="p-2 rounded-full text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                        aria-label="Baixar como Imagem"
+                        aria-label="Salvar como Imagem (PNG)"
                     >
                         <ImageIcon className="w-5 h-5" />
                     </button>
                     <button
                         onClick={handleSharePdf}
-                        title="Compartilhar (PDF)"
+                        title="Compartilhar como PDF"
                         className="p-2 rounded-full text-gray-600 hover:bg-gray-200 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
                         aria-label="Compartilhar como PDF"
                     >
@@ -261,6 +272,7 @@ const App: React.FC = () => {
                     </button>
                  </div>
                  <div ref={itineraryRef} className="p-6 sm:p-10">
+                    {itinerary.mapImageUrl && <ItineraryMap imageUrl={itinerary.mapImageUrl} />}
                     <MarkdownRenderer text={itinerary.text} />
                     {itinerary.sources.length > 0 && (
                         <div className="mt-8 pt-6 border-t border-gray-200">
@@ -281,14 +293,16 @@ const App: React.FC = () => {
                         </div>
                     )}
                  </div>
+                 <div className="p-6 sm:p-10 bg-gray-50/70 border-t border-gray-200 rounded-b-lg">
+                    <SuggestionCards onSelect={handleSuggestionSelect} context="follow-up" />
+                 </div>
               </div>
-            )}
-
-            {!isLoading && !itinerary && !error && (
+            ) : (
                <div className="text-center p-8 bg-white/70 backdrop-blur-sm rounded-lg shadow-md border border-gray-200">
                   <SparklesIcon className="w-16 h-16 mx-auto text-blue-500" />
                   <h2 className="mt-4 text-2xl font-bold text-gray-800">Seu Roteiro Personalizado Começa Aqui</h2>
                   <p className="mt-2 text-gray-600 max-w-xl mx-auto">Preencha os campos acima para que nossa inteligência artificial crie um plano de viagem exclusivo para você. Boa viagem!</p>
+                  <SuggestionCards onSelect={handleSuggestionSelect} context="initial" />
               </div>
             )}
           </div>

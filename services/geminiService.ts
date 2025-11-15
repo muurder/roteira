@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, Modality } from "@google/genai";
 import type { TravelPreferences, ItineraryResult, GroundingSource } from '../types';
 
 const systemInstruction = `Você é um assistente de viagens especializado em criar roteiros personalizados, chamado “Planejador de Viagens”. Sua missão é ajudar o usuário a montar um plano de viagem completo, prático e fácil de seguir, sem depender de banco de dados nem de histórico: tudo deve ser gerado apenas com base na mensagem atual do usuário.
@@ -169,6 +169,38 @@ Seu papel é transformar isso em um plano completo, organizado e prático.
 
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY as string });
 
+async function generateMapImage(destination: string, locations: GroundingSource[]): Promise<string | undefined> {
+    if (locations.length === 0) {
+        return undefined;
+    }
+    
+    const locationsForPrompt = locations.slice(0, 5).map(l => l.title).join(', ');
+    const prompt = `Crie um mapa estilizado e minimalista de ${destination}. Destaque marcos importantes como ${locationsForPrompt}. O estilo deve ser artístico e elegante, como uma ilustração de um guia de viagens, com cores suaves. Sem texto, apenas ícones ou desenhos simples para os locais.`;
+
+    try {
+        const response = await ai.models.generateContent({
+            model: 'gemini-2.5-flash-image',
+            contents: {
+                parts: [{ text: prompt }],
+            },
+            config: {
+                responseModalities: [Modality.IMAGE],
+            },
+        });
+
+        for (const part of response.candidates?.[0]?.content?.parts ?? []) {
+            if (part.inlineData) {
+                const base64ImageBytes: string = part.inlineData.data;
+                return `data:image/png;base64,${base64ImageBytes}`;
+            }
+        }
+        return undefined;
+    } catch (error) {
+        console.error("Error generating map image:", error);
+        return undefined;
+    }
+}
+
 function buildUserPrompt(preferences: TravelPreferences): string {
     let prompt = `Monte um roteiro de viagem de ${preferences.duration} dia(s) para ${preferences.destination}.`;
 
@@ -211,9 +243,12 @@ export async function generateItinerary(preferences: TravelPreferences): Promise
                 title: chunk.maps.title,
             }));
 
+        const mapImageUrl = await generateMapImage(preferences.destination, sources);
+
         return {
           text: response.text,
-          sources: sources
+          sources: sources,
+          mapImageUrl: mapImageUrl,
         };
     } catch (error) {
         console.error("Error calling Gemini API:", error);
