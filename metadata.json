@@ -1,0 +1,5 @@
+{
+  "name": "planejador_de_trips",
+  "description": "A smart travel assistant that creates personalized itineraries based on your destination, interests, and budget. Enter your travel details and get a complete, day-by-day plan with practical tips.",
+  "requestFramePermissions": []
+}
