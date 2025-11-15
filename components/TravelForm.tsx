@@ -10,7 +10,7 @@ interface TravelFormProps {
 }
 
 const interestsOptions = [
-  'Natureza', 'História', 'Gastronomia', 'Vida Noturna', 'Viagem barata', 'Cultura', 'Arte', 'Praia', 'Aventura'
+  'Natureza', 'História', 'Gastronomia', 'Vida Noturna', 'Viagem barata', 'Cultura', 'Arte', 'Praia', 'Aventura', 'Romântico'
 ];
 
 const months = [

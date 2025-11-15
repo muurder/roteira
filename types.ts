@@ -24,5 +24,4 @@ export interface TravelSuggestion {
   duration: number;
   interests: string[];
   description: string;
-  imageUrl: string;
 }

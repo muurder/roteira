@@ -1,23 +1,33 @@
 import React, { useMemo } from 'react';
 import type { TravelSuggestion } from '../types';
 import { allSuggestions } from '../data/suggestions';
+import type { RawSuggestion } from '../data/suggestions';
 
-const getShuffledSuggestions = (): TravelSuggestion[] => {
-  const national = allSuggestions.filter(s => s.destination.includes(', Brasil'));
-  const international = allSuggestions.filter(s => !s.destination.includes(', Brasil') && !s.destination.match(/família|solo|praia|cultural|europa|montanha/i));
-  
-  const shuffledNational = [...national].sort(() => 0.5 - Math.random());
-  const shuffledInternational = [...international].sort(() => 0.5 - Math.random());
+const mapTipoToInterest = (tipo: string): string => {
+    const mapping: { [key: string]: string } = {
+        'praia': 'Praia',
+        'natureza': 'Natureza',
+        'cidade': 'Cultura',
+        'aventura': 'Aventura',
+        'romântico': 'Romântico',
+        'histórico': 'História',
+        'cultural': 'Cultura',
+        'gastronômico': 'Gastronomia',
+    };
+    return mapping[tipo] || tipo.charAt(0).toUpperCase() + tipo.slice(1);
+};
 
-  const numNational = 6;
-  const numInternational = 2;
 
-  const finalSuggestions = [
-    ...shuffledNational.slice(0, numNational),
-    ...shuffledInternational.slice(0, numInternational)
-  ];
+const getShuffledSuggestions = (count = 8): TravelSuggestion[] => {
+  const shuffled: RawSuggestion[] = [...allSuggestions].sort(() => 0.5 - Math.random());
+  const selected = shuffled.slice(0, count);
 
-  return finalSuggestions.sort(() => 0.5 - Math.random());
+  return selected.map((s: RawSuggestion) => ({
+    destination: s.label,
+    duration: s.duracaoIdealDias,
+    interests: [mapTipoToInterest(s.tipo)],
+    description: s.descricaoCurta,
+  }));
 };
 
 
@@ -27,7 +37,7 @@ interface SuggestionCardsProps {
 }
 
 const SuggestionCards: React.FC<SuggestionCardsProps> = ({ onSelect, context = 'initial' }) => {
-  const suggestions = useMemo(() => getShuffledSuggestions(), []);
+  const suggestions = useMemo(() => getShuffledSuggestions(8), []);
 
   const titles = {
     initial: 'Sem ideias? Comece por aqui!',

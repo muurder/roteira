@@ -1,330 +1,290 @@
-import type { TravelSuggestion } from '../types';
+export interface RawSuggestion {
+  id: string;
+  label: string;
+  descricaoCurta: string;
+  tipo: string;
+  duracaoIdealDias: number;
+}
 
-export const allSuggestions: TravelSuggestion[] = [
-  // América do Sul
+export const allSuggestions: RawSuggestion[] = [
   {
-    destination: 'Rio de Janeiro, Brasil',
-    duration: 5,
-    interests: ['Praia', 'Natureza', 'Vida Noturna'],
-    description: 'Praias icônicas, natureza exuberante e vida noturna vibrante.',
-    imageUrl: 'https://source.unsplash.com/800x600/?rio-de-janeiro-brazil',
+    "id": "rio-de-janeiro-brasil",
+    "label": "Rio de Janeiro, Brasil",
+    "descricaoCurta": "Praias icônicas, natureza exuberante e vida noturna vibrante.",
+    "tipo": "praia",
+    "duracaoIdealDias": 5
   },
   {
-    destination: 'Chapada Diamantina, Brasil',
-    duration: 4,
-    interests: ['Natureza', 'Aventura', 'Viagem barata'],
-    description: 'Cachoeiras deslumbrantes, trilhas e paisagens de tirar o fôlego.',
-    imageUrl: 'https://source.unsplash.com/800x600/?chapada-diamantina-brazil',
+    "id": "chapada-diamantina-brasil",
+    "label": "Chapada Diamantina, Brasil",
+    "descricaoCurta": "Cachoeiras deslumbrantes, trilhas e paisagens de tirar o fôlego.",
+    "tipo": "natureza",
+    "duracaoIdealDias": 4
   },
   {
-    destination: 'Santiago, Chile',
-    duration: 5,
-    interests: ['Gastronomia', 'Aventura', 'Cultura'],
-    description: 'Cordilheira dos Andes, vinhos e uma cultura vibrante.',
-    imageUrl: 'https://source.unsplash.com/800x600/?santiago-chile',
+    "id": "santiago-chile",
+    "label": "Santiago, Chile",
+    "descricaoCurta": "Cordilheira dos Andes, vinhos e uma cultura vibrante.",
+    "tipo": "cidade",
+    "duracaoIdealDias": 5
   },
   {
-    destination: 'Buenos Aires, Argentina',
-    duration: 4,
-    interests: ['Cultura', 'Gastronomia', 'História'],
-    description: 'Tango, arquitetura europeia e carnes suculentas.',
-    imageUrl: 'https://source.unsplash.com/800x600/?buenos-aires-argentina',
+    "id": "buenos-aires-argentina",
+    "label": "Buenos Aires, Argentina",
+    "descricaoCurta": "Tango, arquitetura europeia e carnes suculentas.",
+    "tipo": "cultural",
+    "duracaoIdealDias": 4
   },
   {
-    destination: 'Machu Picchu, Peru',
-    duration: 6,
-    interests: ['História', 'Aventura', 'Natureza'],
-    description: 'A mística cidade perdida dos Incas nos Andes.',
-    imageUrl: 'https://source.unsplash.com/800x600/?machu-picchu-peru',
+    "id": "machu-picchu-peru",
+    "label": "Machu Picchu, Peru",
+    "descricaoCurta": "A mística cidade perdida dos Incas nos Andes.",
+    "tipo": "histórico",
+    "duracaoIdealDias": 6
   },
   {
-    destination: 'Cartagena, Colômbia',
-    duration: 4,
-    interests: ['Praia', 'História', 'Cultura'],
-    description: 'Cores vibrantes, muralhas históricas e o mar do Caribe.',
-    imageUrl: 'https://source.unsplash.com/800x600/?cartagena-colombia',
+    "id": "cartagena-colombia",
+    "label": "Cartagena, Colômbia",
+    "descricaoCurta": "Cores vibrantes, muralhas históricas e o mar do Caribe.",
+    "tipo": "histórico",
+    "duracaoIdealDias": 4
   },
   {
-    destination: 'Amazônia, Brasil',
-    duration: 5,
-    interests: ['Natureza', 'Aventura', 'Cultura'],
-    description: 'A maior floresta tropical do mundo e sua biodiversidade única.',
-    imageUrl: 'https://source.unsplash.com/800x600/?amazon-rainforest-brazil',
+    "id": "amazonia-brasil",
+    "label": "Amazônia, Brasil",
+    "descricaoCurta": "A maior floresta tropical do mundo e sua biodiversidade única.",
+    "tipo": "natureza",
+    "duracaoIdealDias": 5
   },
   {
-    destination: 'Foz do Iguaçu, Brasil',
-    duration: 3,
-    interests: ['Natureza', 'Aventura', 'Família'],
-    description: 'As cataratas mais famosas e impressionantes do mundo.',
-    imageUrl: 'https://source.unsplash.com/800x600/?foz-do-iguacu-brazil',
+    "id": "foz-do-iguacu-brasil",
+    "label": "Foz do Iguaçu, Brasil",
+    "descricaoCurta": "As cataratas mais famosas e impressionantes do mundo.",
+    "tipo": "natureza",
+    "duracaoIdealDias": 3
   },
   {
-    destination: 'Ushuaia, Argentina',
-    duration: 5,
-    interests: ['Natureza', 'Aventura', 'Viagem barata'],
-    description: 'Explore a "cidade do fim do mundo" e a Patagônia.',
-    imageUrl: 'https://source.unsplash.com/800x600/?ushuaia-argentina',
-  },
-
-  // América do Norte
-  {
-    destination: 'Nova York, EUA',
-    duration: 7,
-    interests: ['Cultura', 'Arte', 'Gastronomia'],
-    description: 'A cidade que nunca dorme, com seus arranha-céus e parques.',
-    imageUrl: 'https://source.unsplash.com/800x600/?new-york-city',
+    "id": "nova-york-eua",
+    "label": "Nova York, EUA",
+    "descricaoCurta": "A cidade que nunca dorme, com seus arranha-céus e museus.",
+    "tipo": "cidade",
+    "duracaoIdealDias": 7
   },
   {
-    destination: 'Cancún, México',
-    duration: 6,
-    interests: ['Praia', 'Vida Noturna', 'História'],
-    description: 'Praias de areia branca, mar azul-turquesa e ruínas Maias.',
-    imageUrl: 'https://source.unsplash.com/800x600/?cancun-mexico',
+    "id": "cancun-mexico",
+    "label": "Cancún, México",
+    "descricaoCurta": "Praias de areia branca, mar azul-turquesa e ruínas Maias.",
+    "tipo": "praia",
+    "duracaoIdealDias": 6
   },
   {
-    destination: 'Parques do Oeste, EUA',
-    duration: 10,
-    interests: ['Natureza', 'Aventura', 'Viagem barata'],
-    description: 'Uma road trip por canyons, desertos e paisagens icônicas.',
-    imageUrl: 'https://source.unsplash.com/800x600/?west-usa-national-parks',
+    "id": "lisboa-portugal",
+    "label": "Lisboa, Portugal",
+    "descricaoCurta": "História rica, bondes charmosos e gastronomia inesquecível.",
+    "tipo": "histórico",
+    "duracaoIdealDias": 7
   },
   {
-    destination: 'Vancouver, Canadá',
-    duration: 5,
-    interests: ['Natureza', 'Cultura', 'Gastronomia'],
-    description: 'O equilíbrio perfeito entre cidade cosmopolita e natureza.',
-    imageUrl: 'https://source.unsplash.com/800x600/?vancouver-canada',
-  },
-  
-  // Europa
-  {
-    destination: 'Lisboa, Portugal',
-    duration: 7,
-    interests: ['História', 'Gastronomia', 'Cultura'],
-    description: 'História rica, bondes charmosos e gastronomia inesquecível.',
-    imageUrl: 'https://source.unsplash.com/800x600/?lisbon-portugal',
+    "id": "roma-italia",
+    "label": "Roma, Itália",
+    "descricaoCurta": "Um museu a céu aberto com coliseus, fontes e massas.",
+    "tipo": "histórico",
+    "duracaoIdealDias": 5
   },
   {
-    destination: 'Roma, Itália',
-    duration: 5,
-    interests: ['História', 'Arte', 'Gastronomia'],
-    description: 'Um museu a céu aberto com coliseus, fontes e massas.',
-    imageUrl: 'https://source.unsplash.com/800x600/?rome-italy',
+    "id": "paris-franca",
+    "label": "Paris, França",
+    "descricaoCurta": "A cidade do amor, da luz, dos museus e da alta culinária.",
+    "tipo": "romântico",
+    "duracaoIdealDias": 5
   },
   {
-    destination: 'Paris, França',
-    duration: 5,
-    interests: ['Arte', 'Cultura', 'Gastronomia'],
-    description: 'A cidade do amor, da luz, dos museus e da alta culinária.',
-    imageUrl: 'https://source.unsplash.com/800x600/?paris-france',
+    "id": "amsterda-holanda",
+    "label": "Amsterdã, Holanda",
+    "descricaoCurta": "Canais, bicicletas e uma atmosfera liberal e artística.",
+    "tipo": "cultural",
+    "duracaoIdealDias": 4
   },
   {
-    destination: 'Amsterdã, Holanda',
-    duration: 4,
-    interests: ['Cultura', 'Arte', 'Vida Noturna'],
-    description: 'Canais, bicicletas e uma atmosfera liberal e artística.',
-    imageUrl: 'https://source.unsplash.com/800x600/?amsterdam-netherlands',
+    "id": "islandia",
+    "label": "Islândia",
+    "descricaoCurta": "Geleiras, vulcões, cachoeiras e a espetacular Aurora Boreal.",
+    "tipo": "natureza",
+    "duracaoIdealDias": 8
   },
   {
-    destination: 'Islândia',
-    duration: 8,
-    interests: ['Natureza', 'Aventura', 'Viagem barata'],
-    description: 'Geleiras, vulcões, cachoeiras e a espetacular Aurora Boreal.',
-    imageUrl: 'https://source.unsplash.com/800x600/?iceland',
+    "id": "alpes-suicos",
+    "label": "Alpes Suíços",
+    "descricaoCurta": "Montanhas imponentes, lagos cristalinos e vilarejos encantadores.",
+    "tipo": "natureza",
+    "duracaoIdealDias": 6
   },
   {
-    destination: 'Alpes Suíços',
-    duration: 6,
-    interests: ['Natureza', 'Aventura', 'Família'],
-    description: 'Montanhas imponentes, lagos cristalinos e vilarejos encantadores.',
-    imageUrl: 'https://source.unsplash.com/800x600/?swiss-alps',
+    "id": "praga-republica-tcheca",
+    "label": "Praga, República Tcheca",
+    "descricaoCurta": "Um conto de fadas no leste europeu com castelos e pontes.",
+    "tipo": "histórico",
+    "duracaoIdealDias": 3
   },
   {
-    destination: 'Praga, República Tcheca',
-    duration: 3,
-    interests: ['História', 'Cultura', 'Viagem barata'],
-    description: 'Um conto de fadas no leste europeu com castelos e pontes.',
-    imageUrl: 'https://source.unsplash.com/800x600/?prague-czech-republic',
-  },
-
-  // Ásia
-  {
-    destination: 'Tóquio, Japão',
-    duration: 7,
-    interests: ['Cultura', 'Gastronomia', 'Tecnologia'],
-    description: 'A fusão perfeita entre tradições milenares e futurismo.',
-    imageUrl: 'https://source.unsplash.com/800x600/?tokyo-japan',
+    "id": "toquio-japao",
+    "label": "Tóquio, Japão",
+    "descricaoCurta": "A fusão perfeita entre tradições milenares e futurismo.",
+    "tipo": "cultural",
+    "duracaoIdealDias": 7
   },
   {
-    destination: 'Bali, Indonésia',
-    duration: 8,
-    interests: ['Praia', 'Natureza', 'Cultura'],
-    description: 'Templos, arrozais, praias e uma espiritualidade contagiante.',
-    imageUrl: 'https://source.unsplash.com/800x600/?bali-indonesia',
+    "id": "bali-indonesia",
+    "label": "Bali, Indonésia",
+    "descricaoCurta": "Templos, arrozais, praias e uma espiritualidade contagiante.",
+    "tipo": "praia",
+    "duracaoIdealDias": 8
   },
   {
-    destination: 'Bangkok, Tailândia',
-    duration: 4,
-    interests: ['Gastronomia', 'Cultura', 'Vida Noturna'],
-    description: 'Templos dourados, mercados de rua e uma vida noturna agitada.',
-    imageUrl: 'https://source.unsplash.com/800x600/?bangkok-thailand',
+    "id": "bangkok-tailandia",
+    "label": "Bangkok, Tailândia",
+    "descricaoCurta": "Templos dourados, mercados de rua e uma vida noturna agitada.",
+    "tipo": "cidade",
+    "duracaoIdealDias": 4
   },
   {
-    destination: 'Seul, Coréia do Sul',
-    duration: 6,
-    interests: ['Cultura', 'Gastronomia', 'Tecnologia'],
-    description: 'K-pop, palácios históricos e tecnologia de ponta.',
-    imageUrl: 'https://source.unsplash.com/800x600/?seoul-south-korea',
-  },
-  
-  // África e Oceania
-  {
-    destination: 'Cairo, Egito',
-    duration: 5,
-    interests: ['História', 'Cultura', 'Aventura'],
-    description: 'As pirâmides, o Nilo e os tesouros dos faraós.',
-    imageUrl: 'https://source.unsplash.com/800x600/?cairo-egypt',
+    "id": "cairo-egito",
+    "label": "Cairo, Egito",
+    "descricaoCurta": "As pirâmides, o Nilo e os tesouros dos faraós.",
+    "tipo": "histórico",
+    "duracaoIdealDias": 5
   },
   {
-    destination: 'Cidade do Cabo, África do Sul',
-    duration: 6,
-    interests: ['Natureza', 'Aventura', 'Gastronomia'],
-    description: 'Montanhas, praias, vinícolas e uma história poderosa.',
-    imageUrl: 'https://source.unsplash.com/800x600/?cape-town-south-africa',
+    "id": "cidade-do-cabo-africa-do-sul",
+    "label": "Cidade do Cabo, África do Sul",
+    "descricaoCurta": "Montanhas, praias, vinícolas e uma história poderosa.",
+    "tipo": "natureza",
+    "duracaoIdealDias": 6
   },
   {
-    destination: 'Sydney, Austrália',
-    duration: 5,
-    interests: ['Praia', 'Cultura', 'Vida Noturna'],
-    description: 'A icônica Opera House, praias de surf e um estilo de vida descontraído.',
-    imageUrl: 'https://source.unsplash.com/800x600/?sydney-australia',
+    "id": "sydney-australia",
+    "label": "Sydney, Austrália",
+    "descricaoCurta": "A icônica Opera House, praias de surf e um estilo de vida descontraído.",
+    "tipo": "cidade",
+    "duracaoIdealDias": 5
   },
   {
-    destination: 'Queenstown, Nova Zelândia',
-    duration: 4,
-    interests: ['Aventura', 'Natureza', 'Esportes Radicais'],
-    description: 'A capital mundial dos esportes de aventura e paisagens épicas.',
-    imageUrl: 'https://source.unsplash.com/800x600/?queenstown-new-zealand',
+    "id": "queenstown-nova-zelandia",
+    "label": "Queenstown, Nova Zelândia",
+    "descricaoCurta": "A capital mundial dos esportes de aventura e paisagens épicas.",
+    "tipo": "aventura",
+    "duracaoIdealDias": 4
   },
   {
-    destination: 'Marrakech, Marrocos',
-    duration: 4,
-    interests: ['Cultura', 'Gastronomia', 'Viagem barata'],
-    description: 'Mercados exóticos, palácios e a magia do deserto.',
-    imageUrl: 'https://source.unsplash.com/800x600/?marrakech-morocco',
-  },
-  
-  // Genéricas e Inspiradoras
-  {
-    destination: 'Viagem em Família',
-    duration: 7,
-    interests: ['Família', 'Natureza', 'Cultura'],
-    description: 'Crie memórias inesquecíveis com quem você ama.',
-    imageUrl: 'https://source.unsplash.com/800x600/?family-travel',
+    "id": "marrakech-marrocos",
+    "label": "Marrakech, Marrocos",
+    "descricaoCurta": "Mercados exóticos, palácios e a magia do deserto.",
+    "tipo": "cultural",
+    "duracaoIdealDias": 4
   },
   {
-    destination: 'Aventura Solo',
-    duration: 10,
-    interests: ['Aventura', 'Cultura', 'Viagem barata'],
-    description: 'Descubra o mundo e a si mesmo em uma jornada única.',
-    imageUrl: 'https://source.unsplash.com/800x600/?solo-adventure-travel',
+    "id": "jericoacoara-brasil",
+    "label": "Jericoacoara, Brasil",
+    "descricaoCurta": "Dunas, lagoas de água doce e um pôr do sol espetacular.",
+    "tipo": "praia",
+    "duracaoIdealDias": 4
   },
   {
-    destination: 'Férias na Praia',
-    duration: 5,
-    interests: ['Praia', 'Relaxar', 'Família'],
-    description: 'Sol, mar e tranquilidade para recarregar as energias.',
-    imageUrl: 'https://source.unsplash.com/800x600/?beach-vacation',
+    "id": "bonito-brasil",
+    "label": "Bonito, Brasil",
+    "descricaoCurta": "Flutuação em rios de águas cristalinas e grutas azuis.",
+    "tipo": "natureza",
+    "duracaoIdealDias": 4
   },
   {
-    destination: 'Exploração Cultural',
-    duration: 8,
-    interests: ['Cultura', 'História', 'Arte'],
-    description: 'Mergulhe em novas tradições, museus e sabores.',
-    imageUrl: 'https://source.unsplash.com/800x600/?cultural-exploration',
+    "id": "ouro-preto-brasil",
+    "label": "Ouro Preto, Brasil",
+    "descricaoCurta": "Igrejas barrocas, ladeiras de pedra e a história do Brasil.",
+    "tipo": "histórico",
+    "duracaoIdealDias": 3
   },
   {
-    destination: 'Mochilão pela Europa',
-    duration: 15,
-    interests: ['Viagem barata', 'Cultura', 'Vida Noturna'],
-    description: 'Trens, hostels e amizades em uma aventura pelo velho continente.',
-    imageUrl: 'https://source.unsplash.com/800x600/?backpacking-europe',
+    "id": "fernando-de-noronha-brasil",
+    "label": "Fernando de Noronha, Brasil",
+    "descricaoCurta": "Um paraíso de praias preservadas e vida marinha abundante.",
+    "tipo": "praia",
+    "duracaoIdealDias": 5
   },
   {
-    destination: 'Retiro na Montanha',
-    duration: 3,
-    interests: ['Natureza', 'Relaxar', 'Aventura'],
-    description: 'Ar puro, trilhas e silêncio para se reconectar.',
-    imageUrl: 'https://source.unsplash.com/800x600/?mountain-retreat',
+    "id": "kyoto-japao",
+    "label": "Kyoto, Japão",
+    "descricaoCurta": "A antiga capital imperial com seus templos, gueixas e jardins.",
+    "tipo": "cultural",
+    "duracaoIdealDias": 4
   },
   {
-    destination: 'Jericoacoara, Brasil',
-    duration: 4,
-    interests: ['Praia', 'Natureza', 'Aventura'],
-    description: 'Dunas, lagoas de água doce e um pôr do sol espetacular.',
-    imageUrl: 'https://source.unsplash.com/800x600/?jericoacoara-brazil',
+    "id": "santorini-grecia",
+    "label": "Santorini, Grécia",
+    "descricaoCurta": "Casas brancas, cúpulas azuis e o pôr do sol mais famoso do mundo.",
+    "tipo": "romântico",
+    "duracaoIdealDias": 4
   },
   {
-    destination: 'Bonito, Brasil',
-    duration: 4,
-    interests: ['Natureza', 'Aventura', 'Ecoturismo'],
-    description: 'Flutuação em rios de águas cristalinas e grutas azuis.',
-    imageUrl: 'https://source.unsplash.com/800x600/?bonito-ms-brazil',
+    "id": "havana-cuba",
+    "label": "Havana, Cuba",
+    "descricaoCurta": "Carros clássicos, arquitetura colonial e o ritmo da salsa.",
+    "tipo": "histórico",
+    "duracaoIdealDias": 5
   },
   {
-    destination: 'Ouro Preto, Brasil',
-    duration: 3,
-    interests: ['História', 'Cultura', 'Arte'],
-    description: 'Igrejas barrocas, ladeiras de pedra e a história do Brasil.',
-    imageUrl: 'https://source.unsplash.com/800x600/?ouro-preto-brazil',
+    "id": "istambul-turquia",
+    "label": "Istambul, Turquia",
+    "descricaoCurta": "O encontro de dois continentes com mesquitas e bazares.",
+    "tipo": "cultural",
+    "duracaoIdealDias": 5
   },
   {
-    destination: 'Fernando de Noronha, Brasil',
-    duration: 5,
-    interests: ['Praia', 'Natureza', 'Mergulho'],
-    description: 'Um paraíso de praias preservadas e vida marinha abundante.',
-    imageUrl: 'https://source.unsplash.com/800x600/?fernando-de-noronha-brazil',
+    "id": "salvador-brasil",
+    "label": "Salvador, Brasil",
+    "descricaoCurta": "A herança africana, o pelourinho e a culinária com dendê.",
+    "tipo": "histórico",
+    "duracaoIdealDias": 4
   },
   {
-    destination: 'Kyoto, Japão',
-    duration: 4,
-    interests: ['Cultura', 'História', 'Natureza'],
-    description: 'A antiga capital imperial com seus templos, gueixas e jardins.',
-    imageUrl: 'https://source.unsplash.com/800x600/?kyoto-japan',
+    "id": "gramado-brasil",
+    "label": "Gramado, Brasil",
+    "descricaoCurta": "O charme europeu na serra gaúcha com chocolates e vinhos.",
+    "tipo": "romântico",
+    "duracaoIdealDias": 4
   },
   {
-    destination: 'Santorini, Grécia',
-    duration: 4,
-    interests: ['Praia', 'Cultura', 'Gastronomia'],
-    description: 'Casas brancas, cúpulas azuis e o pôr do sol mais famoso do mundo.',
-    imageUrl: 'https://source.unsplash.com/800x600/?santorini-greece',
+    "id": "jalapao-brasil",
+    "label": "Jalapão, Brasil",
+    "descricaoCurta": "Dunas douradas, fervedouros e uma natureza selvagem e preservada.",
+    "tipo": "aventura",
+    "duracaoIdealDias": 5
   },
   {
-    destination: 'Dubai, Emirados Árabes Unidos',
-    duration: 4,
-    interests: ['Luxo', 'Arquitetura', 'Compras'],
-    description: 'Onde o futuro encontra o deserto com arranha-céus e shoppings.',
-    imageUrl: 'https://source.unsplash.com/800x600/?dubai',
+    "id": "serra-da-canastra-brasil",
+    "label": "Serra da Canastra, Brasil",
+    "descricaoCurta": "Cachoeiras imponentes, queijos artesanais e o Rio São Francisco.",
+    "tipo": "natureza",
+    "duracaoIdealDias": 4
   },
   {
-    destination: 'Havana, Cuba',
-    duration: 5,
-    interests: ['História', 'Cultura', 'Música'],
-    description: 'Carros clássicos, arquitetura colonial e o ritmo da salsa.',
-    imageUrl: 'https://source.unsplash.com/800x600/?havana-cuba',
+    "id": "atacama-chile",
+    "label": "Deserto do Atacama, Chile",
+    "descricaoCurta": "Gêiseres, vulcões, lagoas altiplânicas e o céu mais estrelado do mundo.",
+    "tipo": "aventura",
+    "duracaoIdealDias": 5
   },
   {
-    destination: 'Istambul, Turquia',
-    duration: 5,
-    interests: ['História', 'Cultura', 'Gastronomia'],
-    description: 'O encontro de dois continentes com mesquitas e bazares.',
-    imageUrl: 'https://source.unsplash.com/800x600/?istanbul-turkey',
+    "id": "bariloche-argentina",
+    "label": "Bariloche, Argentina",
+    "descricaoCurta": "Neve no inverno, lagos no verão e chocolates o ano todo.",
+    "tipo": "natureza",
+    "duracaoIdealDias": 6
   },
   {
-    destination: 'Budapeste, Hungria',
-    duration: 3,
-    interests: ['História', 'Arquitetura', 'Vida Noturna'],
-    description: 'A "Pérola do Danúbio" com seus banhos termais e "ruin bars".',
-    imageUrl: 'https://source.unsplash.com/800x600/?budapest-hungary',
+    "id": "cidade-do-mexico-mexico",
+    "label": "Cidade do México, México",
+    "descricaoCurta": "A rica história asteca, museus de classe mundial e uma gastronomia vibrante.",
+    "tipo": "cultural",
+    "duracaoIdealDias": 5
   }
 ];

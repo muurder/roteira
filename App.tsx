@@ -11,6 +11,7 @@ import { CopyIcon } from './components/icons/CopyIcon';
 import { MapPinIcon } from './components/icons/MapPinIcon';
 import SuggestionCards from './components/SuggestionCards';
 import ItineraryMap from './components/ItineraryMap';
+import { WhatsAppIcon } from './components/icons/WhatsAppIcon';
 
 declare const jspdf: any;
 
@@ -281,9 +282,15 @@ const App: React.FC = () => {
         </div>
       </main>
       <footer className="text-center py-6 text-gray-500 text-sm">
-        <p>
-            Contato: <a href="https://wa.me/5511987697684" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">(11) 98769-7684</a>
-        </p>
+        <a 
+          href="https://wa.me/5511987697684" 
+          target="_blank" 
+          rel="noopener noreferrer" 
+          className="inline-flex items-center justify-center gap-2 text-blue-600 hover:underline"
+        >
+          <WhatsAppIcon className="w-4 h-4" />
+          <span>Contato: (11) 98769-7684</span>
+        </a>
       </footer>
     </div>
   );
