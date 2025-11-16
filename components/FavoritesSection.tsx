@@ -27,7 +27,7 @@ const FavoritesSection: React.FC<FavoritesSectionProps> = ({ favorites, onSelect
   }
 
   return (
-    <div className="bg-white dark:bg-gray-900/70 py-12">
+    <div className="bg-gray-50 dark:bg-black/20 py-12">
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-bold text-center text-gray-800 dark:text-gray-100 mb-4">
           Seus Roteiros Favoritos
@@ -66,7 +66,7 @@ const FavoritesSection: React.FC<FavoritesSectionProps> = ({ favorites, onSelect
                     {fav.result.text.split('\n').find(line => line.length > 50)?.substring(0, 120) || 'Roteiro detalhado'}...
                   </p>
                 </div>
-                <div className="p-4 bg-gray-100 dark:bg-gray-700/50 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between gap-2">
+                <div className="p-4 bg-gray-100 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between gap-2">
                   <button
                     onClick={() => onSelect(fav)}
                     className="w-full text-center px-4 py-2 bg-blue-600 text-white text-sm font-semibold rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"

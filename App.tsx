@@ -27,6 +27,7 @@ const App: React.FC = () => {
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
   const [lastPreferences, setLastPreferences] = useState<TravelPreferences | null>(null);
   const [selectedSuggestion, setSelectedSuggestion] = useState<TravelSuggestion | null>(null);
+  const [appliedSuggestion, setAppliedSuggestion] = useState<TravelSuggestion | null>(null);
   const [favorites, setFavorites] = useState<FavoriteItinerary[]>([]);
   const [theme, setTheme] = useState<Theme>(() => {
     // This function runs only once on component mount to determine the initial theme.
@@ -46,6 +47,7 @@ const App: React.FC = () => {
   
   const itineraryRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
+  const appliedSuggestionTimerRef = useRef<number | null>(null);
 
   const loadingMessages = useMemo(() => [
     'Traçando as melhores rotas...',
@@ -69,6 +71,15 @@ const App: React.FC = () => {
         return () => clearInterval(interval);
     }
   }, [isLoading, loadingMessages]);
+
+  useEffect(() => {
+    // Cleanup timer on unmount
+    return () => {
+        if (appliedSuggestionTimerRef.current) {
+            clearTimeout(appliedSuggestionTimerRef.current);
+        }
+    };
+  }, []);
 
   useEffect(() => {
     // This effect runs whenever the `theme` state changes.
@@ -283,8 +294,17 @@ const App: React.FC = () => {
   }, [lastPreferences]);
 
   const handleSuggestionSelect = useCallback((suggestion: TravelSuggestion) => {
+    if (appliedSuggestionTimerRef.current) {
+        clearTimeout(appliedSuggestionTimerRef.current);
+    }
     setSelectedSuggestion(suggestion);
+    setAppliedSuggestion(suggestion);
     formRef.current?.scrollIntoView({ behavior: 'smooth' });
+
+    appliedSuggestionTimerRef.current = window.setTimeout(() => {
+        setAppliedSuggestion(null);
+        appliedSuggestionTimerRef.current = null;
+    }, 2500);
   }, []);
 
   const isCurrentFavorite = useMemo(() => {
@@ -443,7 +463,7 @@ const App: React.FC = () => {
                     )}
                  </div>
                  <div className="p-6 sm:p-10 bg-gray-50/70 dark:bg-gray-800/50 border-t border-gray-200 dark:border-gray-700 rounded-b-lg">
-                    <SuggestionCards onSelect={handleSuggestionSelect} context="follow-up" />
+                    <SuggestionCards onSelect={handleSuggestionSelect} context="follow-up" appliedSuggestion={appliedSuggestion} />
                  </div>
               </div>
             ) : (
@@ -451,7 +471,7 @@ const App: React.FC = () => {
                   <SparklesIcon className="w-16 h-16 mx-auto text-blue-500" />
                   <h2 className="mt-4 text-2xl font-bold text-gray-800 dark:text-gray-100">Seu Roteiro Personalizado Começa Aqui</h2>
                   <p className="mt-2 text-gray-600 dark:text-gray-400 max-w-xl mx-auto">Preencha os campos acima para que nossa inteligência artificial crie um plano de viagem exclusivo para você. Boa viagem!</p>
-                  <SuggestionCards onSelect={handleSuggestionSelect} context="initial" />
+                  <SuggestionCards onSelect={handleSuggestionSelect} context="initial" appliedSuggestion={appliedSuggestion} />
               </div>
             )}
           </div>

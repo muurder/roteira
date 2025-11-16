@@ -1,4 +1,3 @@
-
 import React, { useMemo } from 'react';
 import type { TravelSuggestion } from '../types';
 import { allSuggestions } from '../data/suggestions';
@@ -35,9 +34,10 @@ const getShuffledSuggestions = (count = 8): TravelSuggestion[] => {
 interface SuggestionCardsProps {
   onSelect: (suggestion: TravelSuggestion) => void;
   context?: 'initial' | 'follow-up';
+  appliedSuggestion?: TravelSuggestion | null;
 }
 
-const SuggestionCards: React.FC<SuggestionCardsProps> = ({ onSelect, context = 'initial' }) => {
+const SuggestionCards: React.FC<SuggestionCardsProps> = ({ onSelect, context = 'initial', appliedSuggestion }) => {
   const suggestions = useMemo(() => getShuffledSuggestions(8), []);
 
   const titles = {
@@ -49,17 +49,20 @@ const SuggestionCards: React.FC<SuggestionCardsProps> = ({ onSelect, context = '
     <div className={context === 'initial' ? "mt-8 pt-8 border-t border-gray-200 dark:border-gray-700" : ""}>
         <h3 className="text-xl font-bold text-gray-800 dark:text-gray-100 text-center mb-6">{titles[context]}</h3>
         <div className="flex flex-wrap justify-center gap-3 px-4">
-            {suggestions.map((suggestion) => (
-                <button 
-                    key={suggestion.destination} 
-                    onClick={() => onSelect(suggestion)}
-                    className="px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded-full text-sm font-medium border border-gray-200 dark:border-gray-600 hover:bg-blue-100 dark:hover:bg-gray-600 hover:text-blue-800 dark:hover:text-gray-100 hover:border-blue-300 dark:hover:border-gray-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
-                    title={suggestion.description}
-                    aria-label={`Sugerir roteiro para ${suggestion.destination}`}
-                >
-                    {suggestion.destination}
-                </button>
-            ))}
+            {suggestions.map((suggestion) => {
+                const isApplied = appliedSuggestion?.destination === suggestion.destination;
+                return (
+                    <button 
+                        key={suggestion.destination} 
+                        onClick={() => onSelect(suggestion)}
+                        className={`px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300 rounded-full text-sm font-medium border border-gray-200 dark:border-gray-600 hover:bg-blue-100 dark:hover:bg-blue-900/40 hover:text-blue-800 dark:hover:text-gray-100 hover:border-blue-300 dark:hover:border-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition-all duration-300 ease-in-out ${isApplied ? 'ring-2 ring-blue-500 ring-offset-2 dark:ring-offset-gray-800 shadow-lg scale-105' : ''}`}
+                        title={suggestion.description}
+                        aria-label={`Sugerir roteiro para ${suggestion.destination}`}
+                    >
+                        {suggestion.destination}
+                    </button>
+                )
+            })}
         </div>
     </div>
   );
