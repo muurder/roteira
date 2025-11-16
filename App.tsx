@@ -14,6 +14,8 @@ import { WhatsAppIcon } from './components/icons/WhatsAppIcon';
 import { HeartIcon } from './components/icons/HeartIcon';
 import FavoritesSection from './components/FavoritesSection';
 import { ArrowLeftIcon } from './components/icons/ArrowLeftIcon';
+import { TwitterIcon } from './components/icons/TwitterIcon';
+import { FacebookIcon } from './components/icons/FacebookIcon';
 
 declare const jspdf: any;
 type Theme = 'light' | 'dark';
@@ -265,6 +267,21 @@ const App: React.FC = () => {
     }
   }, [itinerary, lastPreferences]);
 
+  const handleShareTwitter = useCallback(() => {
+    if (!lastPreferences) return;
+    const text = `Confira meu roteiro de ${lastPreferences.duration} dia(s) para ${lastPreferences.destination} criado por IA! ✈️ #roteiro #viagem #AI`;
+    const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }, [lastPreferences]);
+
+  const handleShareFacebook = useCallback(() => {
+    if (!lastPreferences) return;
+    const appUrl = window.location.href;
+    const quote = `Estou planejando uma viagem de ${lastPreferences.duration} dia(s) para ${lastPreferences.destination} com este incrível planejador de viagens IA!`;
+    const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(appUrl)}&quote=${encodeURIComponent(quote)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
+  }, [lastPreferences]);
+
   const handleSuggestionSelect = useCallback((suggestion: TravelSuggestion) => {
     setSelectedSuggestion(suggestion);
     formRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -316,7 +333,7 @@ const App: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 font-sans text-gray-800 dark:text-gray-200 antialiased">
+    <div className="min-h-screen bg-gray-100/50 dark:bg-gray-900 font-sans text-gray-800 dark:text-gray-200 antialiased">
       <Header theme={theme} onThemeToggle={handleThemeToggle} />
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
@@ -379,6 +396,22 @@ const App: React.FC = () => {
                         <CopyIcon className="w-5 h-5" />
                     </button>
                     <button
+                        onClick={handleShareTwitter}
+                        title="Compartilhar no Twitter"
+                        className="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-blue-500 dark:hover:text-blue-400 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        aria-label="Compartilhar no Twitter"
+                    >
+                        <TwitterIcon className="w-5 h-5" />
+                    </button>
+                    <button
+                        onClick={handleShareFacebook}
+                        title="Compartilhar no Facebook"
+                        className="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 hover:text-blue-600 dark:hover:text-blue-500 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        aria-label="Compartilhar no Facebook"
+                    >
+                        <FacebookIcon className="w-5 h-5" />
+                    </button>
+                    <button
                         onClick={handleSharePdf}
                         title="Compartilhar como PDF"
                         className="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-gray-100 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
@@ -429,7 +462,7 @@ const App: React.FC = () => {
         onSelect={handleSelectFavorite} 
         onRemove={handleRemoveFavorite} 
       />
-      <footer className="text-center py-6 text-gray-600 dark:text-gray-400 text-sm">
+      <footer className="text-center py-6 text-gray-500 dark:text-gray-400 text-sm">
         <div className="inline-flex items-center justify-center gap-2">
           <span>Contato:</span>
           <a

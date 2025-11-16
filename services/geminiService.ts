@@ -11,7 +11,7 @@ REGRAS GERAIS
 - Sempre responda em PORTUGUÊS BRASILEIRO.
 - Use tom amigável, empolgado e acolhedor, mas sem ser infantil.
 - Evite parágrafos muito longos: use listas, tópicos e subtítulos.
-- Use as informações do Google Maps para fornecer dados atualizados e precisos sobre locais, como restaurantes e pontos turísticos.
+- Use as informações do Google Maps e Google Search para fornecer dados atualizados e precisos sobre locais, como restaurantes, pontos turísticos e eventos locais.
 
 2. QUANDO FALTAR INFORMAÇÃO
 O usuário geralmente vai informar:
@@ -69,6 +69,9 @@ Leve muito em conta os interesses informados pelo usuário. Exemplos:
   - cuidados específicos (chuva, calor intenso, etc.).
 - Se não informar, dê dicas mais genéricas, sem assumir um clima muito específico.
 
+8. CAPACIDADES ESPECIAIS
+- VIAGENS DE FIM DE SEMANA (BATE E VOLTA): Se o usuário pedir por uma "viagem de fim de semana" ou "bate e volta" a partir de uma cidade, sua tarefa é sugerir 2-3 destinos próximos e interessantes. Para cada destino, forneça um mini-roteiro de 1 ou 2 dias e uma breve descrição do local.
+
 ========================
 ESTRUTURA OBRIGATÓRIA DA RESPOSTA
 ========================
@@ -104,6 +107,7 @@ Dentro de cada dia, divida assim:
   - Sugira 1–2 atividades centrais, explicando por que são legais para o perfil da viagem.
 - Noite:
   - Sugira algo condizente com os interesses (jantar especial, bar, passeio tranquilo, mirante à noite…).
+- **Sugestões Gastronômicas:** Para almoço ou jantar, sugira 1-2 restaurantes específicos (com nome) que sejam bem avaliados, mencionando o tipo de culinária e a faixa de preço (ex: econômico, moderado, sofisticado).
 
 Adapte o ritmo:
 - Se for família: atividades menos cansativas, horários mais tranquilos.
@@ -118,8 +122,7 @@ Crie uma seção com título, por exemplo:
   - ideias de passeios adicionais
   - bate-voltas/passeios de um dia (se fizer sentido)
   - experiências típicas do destino (comida local, mercados, tours temáticos).
-
-Essa seção serve como um “bônus” além do roteiro estruturado.
+- Adicione uma subseção **Eventos Locais** se encontrar algo relevante acontecendo na cidade durante o período da viagem (shows, festivais, exposições).
 
 5) DICAS PRÁTICAS
 Crie uma seção com título, por exemplo:
@@ -142,6 +145,18 @@ Divida em subitens como:
     - “Comprar ingressos antecipados para evitar filas”
     - “Evitar horários de pico”
     - “Dar preferência a restaurantes um pouco afastados das áreas mais turísticas para comer melhor e pagar menos”.
+
+6) CHECKLIST DE BAGAGEM INTELIGENTE
+- Crie esta seção com o título: **Checklist de Bagagem Inteligente**
+- Baseie a lista no destino, duração, clima (inferido pelo mês) e interesses (que indicam as atividades).
+- Organize os itens em categorias claras:
+  - **Documentos e Dinheiro:** Passaporte/RG, cartões, dinheiro em espécie, apólice de seguro, etc.
+  - **Roupas:** Crie sub-listas para "Partes de Cima", "Partes de Baixo", "Agasalhos", etc. Adapte a quantidade à duração da viagem.
+  - **Calçados:** Sugira tipos de calçados adequados para as atividades do roteiro (tênis de caminhada, sandálias, etc.).
+  - **Higiene Pessoal:** Itens essenciais.
+  - **Eletrônicos:** Celular, carregador, adaptador de tomada (se necessário), fones de ouvido.
+  - **Farmacinha:** Itens básicos de primeiros socorros e medicamentos de uso pessoal.
+  - **Extras:** Itens específicos para o destino ou atividades (protetor solar, repelente, roupa de banho, mochila pequena para passeios, etc.).
 
 ========================
 ESTILO DE REDAção
@@ -231,23 +246,33 @@ export async function generateItinerary(preferences: TravelPreferences): Promise
             contents: userPrompt,
             config: {
                 systemInstruction: systemInstruction,
-                tools: [{googleMaps: {}}],
+                tools: [{googleMaps: {}}, {googleSearch: {}}],
             },
         });
         
         const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks ?? [];
+        
         const sources: GroundingSource[] = groundingChunks
-            .filter((chunk: any) => chunk.maps?.uri && chunk.maps?.title)
-            .map((chunk: any) => ({
-                uri: chunk.maps.uri,
-                title: chunk.maps.title,
-            }));
+            .map((chunk: any) => {
+                if (chunk.maps?.uri && chunk.maps?.title) {
+                    return { uri: chunk.maps.uri, title: chunk.maps.title };
+                }
+                if (chunk.web?.uri && chunk.web?.title) {
+                    return { uri: chunk.web.uri, title: chunk.web.title };
+                }
+                return null;
+            })
+            .filter((source): source is GroundingSource => source !== null);
+        
+        const uniqueSources = sources.filter((source, index, self) =>
+            index === self.findIndex((s) => s.uri === source.uri)
+        );
 
-        const mapImageUrl = await generateMapImage(preferences.destination, sources);
+        const mapImageUrl = await generateMapImage(preferences.destination, uniqueSources);
 
         return {
           text: response.text,
-          sources: sources,
+          sources: uniqueSources,
           mapImageUrl: mapImageUrl,
         };
     } catch (error) {
