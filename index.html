@@ -6,6 +6,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>AI Travel Planner</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      // Define explicitamente o darkMode como 'class' para substituir a estratégia 'media' padrão do CDN.
+      // Isso permite que o botão de alternância de tema funcione corretamente.
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            keyframes: {
+              'fade-in-down': {
+                '0%': {
+                  opacity: '0',
+                  transform: 'translateY(-10px)'
+                },
+                '100%': {
+                  opacity: '1',
+                  transform: 'translateY(0)'
+                },
+              }
+            },
+            animation: {
+              'fade-in-down': 'fade-in-down 0.5s ease-out'
+            }
+          }
+        }
+      }
+    </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script type="importmap">
 {

@@ -13,6 +13,7 @@ import ItineraryMap from './components/ItineraryMap';
 import { WhatsAppIcon } from './components/icons/WhatsAppIcon';
 import { HeartIcon } from './components/icons/HeartIcon';
 import FavoritesSection from './components/FavoritesSection';
+import { ArrowLeftIcon } from './components/icons/ArrowLeftIcon';
 
 declare const jspdf: any;
 type Theme = 'light' | 'dark';
@@ -83,9 +84,9 @@ const App: React.FC = () => {
     }
   }, [theme]);
 
-  const handleThemeToggle = () => {
+  const handleThemeToggle = useCallback(() => {
     setTheme(currentTheme => (currentTheme === 'light' ? 'dark' : 'light'));
-  };
+  }, []);
 
   useEffect(() => {
     try {
@@ -307,8 +308,15 @@ const App: React.FC = () => {
       ));
   }, []);
 
+  const handleStartNewItinerary = useCallback(() => {
+    setItinerary(null);
+    setError(null);
+    setLastPreferences(null);
+    formRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-100/50 dark:bg-gray-900 font-sans text-gray-800 dark:text-gray-200 antialiased">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 font-sans text-gray-800 dark:text-gray-200 antialiased">
       <Header theme={theme} onThemeToggle={handleThemeToggle} />
       <main className="container mx-auto px-4 py-8">
         <div className="max-w-4xl mx-auto">
@@ -336,6 +344,14 @@ const App: React.FC = () => {
             ) : itinerary ? (
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl border border-gray-200 dark:border-gray-700 animate-fade-in">
                  <div className="sticky top-0 z-10 flex items-center justify-end space-x-1 sm:space-x-2 p-2 bg-gray-50/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700 rounded-t-lg">
+                    <button
+                        onClick={handleStartNewItinerary}
+                        title="Criar Novo Roteiro"
+                        className="p-2 rounded-full text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-gray-100 hover:text-gray-900 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                        aria-label="Criar Novo Roteiro"
+                    >
+                        <ArrowLeftIcon className="w-5 h-5" />
+                    </button>
                     <button
                         onClick={handleToggleFavorite}
                         title={isCurrentFavorite ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos'}
@@ -413,7 +429,7 @@ const App: React.FC = () => {
         onSelect={handleSelectFavorite} 
         onRemove={handleRemoveFavorite} 
       />
-      <footer className="text-center py-6 text-gray-500 dark:text-gray-400 text-sm">
+      <footer className="text-center py-6 text-gray-600 dark:text-gray-400 text-sm">
         <div className="inline-flex items-center justify-center gap-2">
           <span>Contato:</span>
           <a
