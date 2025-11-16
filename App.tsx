@@ -1,6 +1,5 @@
-
-import React, { useState, useCallback, useRef } from 'react';
-import type { TravelPreferences, ItineraryResult, TravelSuggestion } from './types';
+import React, { useState, useCallback, useRef, useEffect, useMemo } from 'react';
+import type { TravelPreferences, ItineraryResult, TravelSuggestion, FavoriteItinerary } from './types';
 import { generateItinerary } from './services/geminiService';
 import Header from './components/Header';
 import TravelForm from './components/TravelForm';
@@ -12,6 +11,8 @@ import { MapPinIcon } from './components/icons/MapPinIcon';
 import SuggestionCards from './components/SuggestionCards';
 import ItineraryMap from './components/ItineraryMap';
 import { WhatsAppIcon } from './components/icons/WhatsAppIcon';
+import { HeartIcon } from './components/icons/HeartIcon';
+import FavoritesSection from './components/FavoritesSection';
 
 declare const jspdf: any;
 
@@ -22,8 +23,28 @@ const App: React.FC = () => {
   const [copyStatus, setCopyStatus] = useState<'idle' | 'copied'>('idle');
   const [lastPreferences, setLastPreferences] = useState<TravelPreferences | null>(null);
   const [selectedSuggestion, setSelectedSuggestion] = useState<TravelSuggestion | null>(null);
+  const [favorites, setFavorites] = useState<FavoriteItinerary[]>([]);
   const itineraryRef = useRef<HTMLDivElement>(null);
   const formRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    try {
+        const storedFavorites = localStorage.getItem('favoriteItineraries');
+        if (storedFavorites) {
+            setFavorites(JSON.parse(storedFavorites));
+        }
+    } catch (error) {
+        console.error("Failed to load favorites from localStorage", error);
+    }
+  }, []);
+
+  useEffect(() => {
+      try {
+          localStorage.setItem('favoriteItineraries', JSON.stringify(favorites));
+      } catch (error) {
+          console.error("Failed to save favorites to localStorage", error);
+      }
+  }, [favorites]);
 
   const handleFormSubmit = useCallback(async (preferences: TravelPreferences) => {
     setIsLoading(true);
@@ -188,6 +209,44 @@ const App: React.FC = () => {
     formRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
+  const isCurrentFavorite = useMemo(() => {
+    if (!itinerary || !lastPreferences) return false;
+    return favorites.some(fav => 
+        fav.result.text === itinerary.text &&
+        JSON.stringify(fav.preferences) === JSON.stringify(lastPreferences)
+    );
+  }, [itinerary, lastPreferences, favorites]);
+
+  const handleToggleFavorite = useCallback(() => {
+    if (!itinerary || !lastPreferences) return;
+
+    if (isCurrentFavorite) {
+        setFavorites(prev => prev.filter(fav => 
+            fav.result.text !== itinerary.text ||
+            JSON.stringify(fav.preferences) !== JSON.stringify(lastPreferences)
+        ));
+    } else {
+        const newFavorite: FavoriteItinerary = {
+            preferences: lastPreferences,
+            result: itinerary
+        };
+        setFavorites(prev => [...prev, newFavorite]);
+    }
+  }, [isCurrentFavorite, itinerary, lastPreferences]);
+
+  const handleSelectFavorite = useCallback((favorite: FavoriteItinerary) => {
+    setItinerary(favorite.result);
+    setLastPreferences(favorite.preferences);
+    itineraryRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    window.scrollTo({ top: itineraryRef.current?.offsetTop ?? 0, behavior: 'smooth' });
+  }, []);
+
+  const handleRemoveFavorite = useCallback((favoriteToRemove: FavoriteItinerary) => {
+      setFavorites(prev => prev.filter(fav => 
+           JSON.stringify(fav) !== JSON.stringify(favoriteToRemove)
+      ));
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100/50 font-sans text-gray-800 antialiased">
       <Header />
@@ -217,6 +276,14 @@ const App: React.FC = () => {
             ) : itinerary ? (
               <div className="bg-white rounded-lg shadow-xl border border-gray-200 animate-fade-in">
                  <div className="sticky top-0 z-10 flex items-center justify-end space-x-1 sm:space-x-2 p-2 bg-gray-50/80 backdrop-blur-sm border-b border-gray-200 rounded-t-lg">
+                    <button
+                        onClick={handleToggleFavorite}
+                        title={isCurrentFavorite ? 'Remover dos Favoritos' : 'Adicionar aos Favoritos'}
+                        className={`p-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${isCurrentFavorite ? 'text-red-500 bg-red-100' : 'text-gray-600 hover:bg-gray-200 hover:text-gray-900'}`}
+                        aria-label="Adicionar aos Favoritos"
+                    >
+                        <HeartIcon className="w-5 h-5" filled={isCurrentFavorite} />
+                    </button>
                     <button
                         onClick={handleRegenerate}
                         title="Gerar novo roteiro com IA"
@@ -281,16 +348,25 @@ const App: React.FC = () => {
           </div>
         </div>
       </main>
+      <FavoritesSection 
+        favorites={favorites} 
+        onSelect={handleSelectFavorite} 
+        onRemove={handleRemoveFavorite} 
+      />
       <footer className="text-center py-6 text-gray-500 text-sm">
-        <a 
-          href="https://wa.me/5511987697684" 
-          target="_blank" 
-          rel="noopener noreferrer" 
-          className="inline-flex items-center justify-center gap-2 text-blue-600 hover:underline"
-        >
-          <WhatsAppIcon className="w-4 h-4" />
-          <span>Contato: (11) 98769-7684</span>
-        </a>
+        <div className="inline-flex items-center justify-center gap-2">
+          <span>Contato:</span>
+          <a
+            href="https://wa.me/5511987697684"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-blue-600 hover:underline"
+            aria-label="Entrar em contato via WhatsApp"
+          >
+            <WhatsAppIcon className="w-5 h-5" />
+            <span>(11) 98769-7684</span>
+          </a>
+        </div>
       </footer>
     </div>
   );

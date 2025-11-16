@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import type { TravelPreferences, TravelSuggestion } from '../types';
 import { SparklesIcon } from './icons/SparklesIcon';
 
@@ -27,9 +27,6 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion
   const [budget, setBudget] = useState<number | ''>('');
   const [travelerType, setTravelerType] = useState<'sozinho' | 'casal' | 'família' | 'amigos' | ''>('');
 
-  const [isInterestsDropdownOpen, setIsInterestsDropdownOpen] = useState(false);
-  const interestsInputRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     if (suggestion) {
       setDestination(suggestion.destination);
@@ -46,23 +43,6 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion
         : [...prev, interest]
     );
   };
-
-  const handleRemoveInterest = (interestToRemove: string, e: React.MouseEvent) => {
-    e.stopPropagation();
-    setInterests(prev => prev.filter(i => i !== interestToRemove));
-  };
-  
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-        if (interestsInputRef.current && !interestsInputRef.current.contains(event.target as Node)) {
-            setIsInterestsDropdownOpen(false);
-        }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-        document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -125,122 +105,92 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion
           </div>
         </div>
         
-        <div className="relative" ref={interestsInputRef}>
+        <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Principais Interesses</label>
-            <button
-                type="button"
-                onClick={() => setIsInterestsDropdownOpen(prev => !prev)}
-                className="w-full flex flex-wrap gap-2 p-2 border border-gray-300 rounded-md shadow-sm bg-white cursor-pointer min-h-[42px] items-center text-left focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                aria-haspopup="listbox"
-                aria-expanded={isInterestsDropdownOpen}
-            >
-                {interests.length > 0 ? (
-                    interests.map(interest => (
-                        <span key={interest} className="flex items-center bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded-full">
-                            {interest}
-                            <button
-                                type="button"
-                                onClick={(e) => handleRemoveInterest(interest, e)}
-                                className="ml-1.5 -mr-1 flex-shrink-0 h-4 w-4 rounded-full inline-flex items-center justify-center text-blue-600 hover:bg-blue-200 hover:text-blue-800 focus:outline-none focus:bg-blue-500 focus:text-white"
-                                aria-label={`Remover ${interest}`}
-                            >
-                                <span className="sr-only">Remover {interest}</span>
-                                <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 8 8">
-                                    <path strokeLinecap="round" strokeWidth="1.5" d="M1 1l6 6m0-6L1 7" />
-                                </svg>
-                            </button>
-                        </span>
-                    ))
-                ) : (
-                    <span className="text-gray-500 px-1">Selecione um ou mais interesses...</span>
-                )}
-            </button>
-            {isInterestsDropdownOpen && (
-                <div className="absolute z-20 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-auto focus:outline-none" role="listbox">
-                    <ul className="py-1">
-                        {interestsOptions.map(option => (
-                            <li
-                                key={option}
-                                onClick={() => handleInterestToggle(option)}
-                                className="px-4 py-2 cursor-pointer hover:bg-gray-100 flex items-center justify-between text-gray-900"
-                                role="option"
-                                aria-selected={interests.includes(option)}
-                            >
-                                <span className={`${interests.includes(option) ? 'font-semibold' : 'font-normal'}`}>
-                                    {option}
-                                </span>
-                                {interests.includes(option) && (
-                                    <svg className="w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                                    </svg>
-                                )}
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            )}
+            <div className="mt-2 flex flex-wrap justify-center gap-2">
+                {interestsOptions.map(option => (
+                    <button
+                        key={option}
+                        type="button"
+                        onClick={() => handleInterestToggle(option)}
+                        className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                            interests.includes(option)
+                                ? 'bg-blue-600 text-white border-blue-700'
+                                : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 hover:border-gray-300'
+                        }`}
+                        aria-pressed={interests.includes(option)}
+                    >
+                        {option}
+                    </button>
+                ))}
+            </div>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-gray-200">
+        <div className="space-y-6 pt-4 border-t border-gray-200">
           <div>
-            <label htmlFor="month" className="block text-sm font-medium text-gray-700 mb-1">Mês da Viagem (Opcional)</label>
-            <div className="relative">
-              <select
-                  id="month"
-                  value={month}
-                  onChange={(e) => setMonth(e.target.value)}
-                  className="w-full px-4 py-2 pr-8 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 appearance-none"
-              >
-                  <option value="">Selecione...</option>
-                  {months.map(m => <option key={m} value={m}>{m}</option>)}
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                  <svg className="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fillRule="evenodd" d="M10 3a.75.75 0 01.53.22l3.25 3.25a.75.75 0 11-1.06 1.06L10 4.81 7.28 7.53a.75.75 0 01-1.06-1.06l3.25-3.25A.75.75 0 0110 3zM7.28 12.47a.75.75 0 011.06 0L10 15.19l2.72-2.72a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0l-3.25-3.25a.75.75 0 010-1.06z" clipRule="evenodd" />
-                  </svg>
-              </div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Mês da Viagem (Opcional)</label>
+            <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+                {months.map(m => (
+                    <button
+                        key={m}
+                        type="button"
+                        onClick={() => setMonth(prev => prev === m ? '' : m)}
+                        className={`w-full text-center px-2 py-2 rounded-md text-sm font-medium border transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
+                            month === m
+                                ? 'bg-blue-600 text-white border-blue-700'
+                                : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 hover:border-gray-300'
+                        }`}
+                        aria-pressed={month === m}
+                    >
+                        {m}
+                    </button>
+                ))}
             </div>
           </div>
-           <div>
-            <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-1">Orçamento (Opcional)</label>
-            <div className="relative">
-                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <span className="text-gray-500 sm:text-sm">R$</span>
-                 </div>
-                <input
-                    type="number"
-                    id="budget"
-                    value={budget}
-                    onChange={(e) => setBudget(e.target.value ? parseInt(e.target.value, 10) : '')}
-                    placeholder="2000"
-                    min="0"
-                    className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                />
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-1">Orçamento (Opcional)</label>
+                <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <span className="text-gray-500 sm:text-sm">R$</span>
+                    </div>
+                    <input
+                        type="number"
+                        id="budget"
+                        value={budget}
+                        onChange={(e) => setBudget(e.target.value ? parseInt(e.target.value, 10) : '')}
+                        placeholder="2000"
+                        min="0"
+                        className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    />
+                </div>
             </div>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Viajante (Opcional)</label>
-            <div className="relative">
-              <select
-                  id="travelerType"
-                  value={travelerType}
-                  onChange={(e) => setTravelerType(e.target.value as any)}
-                  className="w-full px-4 py-2 pr-8 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 appearance-none"
-              >
-                  <option value="">Selecione...</option>
-                  <option value="sozinho">Sozinho</option>
-                  <option value="casal">Casal</option>
-                  <option value="família">Família</option>
-                  <option value="amigos">Amigos</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                  <svg className="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fillRule="evenodd" d="M10 3a.75.75 0 01.53.22l3.25 3.25a.75.75 0 11-1.06 1.06L10 4.81 7.28 7.53a.75.75 0 01-1.06-1.06l3.25-3.25A.75.75 0 0110 3zM7.28 12.47a.75.75 0 011.06 0L10 15.19l2.72-2.72a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0l-3.25-3.25a.75.75 0 010-1.06z" clipRule="evenodd" />
-                  </svg>
-              </div>
+            <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Viajante (Opcional)</label>
+                <div className="relative">
+                <select
+                    id="travelerType"
+                    value={travelerType}
+                    onChange={(e) => setTravelerType(e.target.value as any)}
+                    className="w-full px-4 py-2 pr-8 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 appearance-none"
+                >
+                    <option value="">Selecione...</option>
+                    <option value="sozinho">Sozinho</option>
+                    <option value="casal">Casal</option>
+                    <option value="família">Família</option>
+                    <option value="amigos">Amigos</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <svg className="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fillRule="evenodd" d="M10 3a.75.75 0 01.53.22l3.25 3.25a.75.75 0 11-1.06 1.06L10 4.81 7.28 7.53a.75.75 0 01-1.06-1.06l3.25-3.25A.75.75 0 0110 3zM7.28 12.47a.75.75 0 011.06 0L10 15.19l2.72-2.72a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0l-3.25-3.25a.75.75 0 010-1.06z" clipRule="evenodd" />
+                    </svg>
+                </div>
+                </div>
             </div>
           </div>
         </div>
+
 
         <div className="pt-4 text-center">
           <button

@@ -1,4 +1,3 @@
-
 export interface GroundingSource {
   uri: string;
   title: string;
@@ -24,4 +23,9 @@ export interface TravelSuggestion {
   duration: number;
   interests: string[];
   description: string;
+}
+
+export interface FavoriteItinerary {
+  preferences: TravelPreferences;
+  result: ItineraryResult;
 }

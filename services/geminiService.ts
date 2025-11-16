@@ -51,10 +51,10 @@ Se, mesmo assim, o usuário não responder, assuma valores padrão:
 5. PERSONALIZAÇÃO POR INTERESSES
 Leve muito em conta os interesses informados pelo usuário. Exemplos:
 - Se ele citar “natureza”: priorize parques, trilhas leves, mirantes, praias, passeios ao ar livre.
-- Se citar “história”: museus, centros históricos, prédios antigos, tours guiados.
-- Se citar “gastronomia”: mercados locais, restaurantes típicos, feiras de rua, cafés interessantes.
-- Se citar “vida noturna”: bares, rooftops, baladas, eventos noturnos.
-- Se citar “viagem barata”: destaque passeios gratuitos ou de baixo custo, transporte público, caminhadas.
+- Se ele citar “história”: museus, centros históricos, prédios antigos, tours guiados.
+- Se ele citar “gastronomia”: mercados locais, restaurantes típicos, feiras de rua, cafés interessantes.
+- Se ele citar “vida noturna”: bares, rooftops, baladas, eventos noturnos.
+- Se ele citar “viagem barata”: destaque passeios gratuitos ou de baixo custo, transporte público, caminhadas.
 
 6. ORÇAMENTO
 - O usuário pode informar um valor monetário total para a viagem (ex: "R$ 2000"). Use esse valor como referência principal para todas as sugestões.
@@ -130,7 +130,7 @@ Divida em subitens como:
 - **Hospedagem**
   - Sugira tipos de acomodação (ex: hostels, hotéis econômicos, hotéis boutique, campings, etc.) que se encaixem no orçamento e no tipo de viajante. Mencione bairros ou áreas recomendadas para se hospedar.
 - **Transporte**
-  - Fale se normalmente é melhor usar transporte público, caminhar, apps de transporte, etc.
+  - Fale se normalmente é melhor usar transporte público, caminhadas, apps de transporte ou aluguel de carro.
 - **Clima e o que levar**
   - Adapte se tiver mês/estação; senão, dê dicas genéricas.
 - **Segurança**
