@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import type { TravelPreferences, TravelSuggestion } from '../types';
+import { MapPinIcon } from './icons/MapPinIcon';
+// FIX: Import SparklesIcon to be used in the submit button.
 import { SparklesIcon } from './icons/SparklesIcon';
 
 interface TravelFormProps {
@@ -54,14 +56,14 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion
   };
 
   return (
-    <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg border border-gray-200">
+    <div className="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700">
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
-            <label htmlFor="destination" className="block text-sm font-medium text-gray-700 mb-1">Destino</label>
+            <label htmlFor="destination" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Destino</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <SparklesIcon className="w-5 h-5 text-gray-400" />
+                  <MapPinIcon className="w-5 h-5 text-gray-400" />
               </div>
               <input
                 type="text"
@@ -69,18 +71,18 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion
                 value={destination}
                 onChange={(e) => setDestination(e.target.value)}
                 placeholder="Para onde vamos? Ex: Paris, França"
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900"
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 dark:placeholder-gray-400"
                 required
               />
             </div>
           </div>
           <div>
-            <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-1">Duração (dias)</label>
+            <label htmlFor="duration" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Duração (dias)</label>
             <div className="relative">
                 <button
                     type="button"
                     onClick={() => setDuration(prev => Math.max(1, prev - 1))}
-                    className="absolute left-0 top-0 h-full px-3 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:z-10 transition-colors"
+                    className="absolute left-0 top-0 h-full px-3 text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:z-10 transition-colors"
                     aria-label="Diminuir dias"
                 >
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z" clipRule="evenodd"></path></svg>
@@ -91,12 +93,12 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion
                     value={duration}
                     onChange={(e) => setDuration(Math.max(1, parseInt(e.target.value, 10) || 1))}
                     min="1"
-                    className="w-full text-center px-12 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                    className="w-full text-center px-12 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                 />
                 <button
                     type="button"
                     onClick={() => setDuration(prev => prev + 1)}
-                    className="absolute right-0 top-0 h-full px-3 text-gray-500 hover:text-gray-800 hover:bg-gray-100 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:z-10 transition-colors"
+                    className="absolute right-0 top-0 h-full px-3 text-gray-500 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-100 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-r-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:z-10 transition-colors"
                     aria-label="Aumentar dias"
                 >
                     <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clipRule="evenodd"></path></svg>
@@ -106,7 +108,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion
         </div>
         
         <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Principais Interesses</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Principais Interesses</label>
             <div className="mt-2 flex flex-wrap justify-center gap-2">
                 {interestsOptions.map(option => (
                     <button
@@ -116,7 +118,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion
                         className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
                             interests.includes(option)
                                 ? 'bg-blue-600 text-white border-blue-700'
-                                : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 hover:border-gray-300'
+                                : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 hover:border-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:border-gray-500'
                         }`}
                         aria-pressed={interests.includes(option)}
                     >
@@ -126,9 +128,9 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion
             </div>
         </div>
         
-        <div className="space-y-6 pt-4 border-t border-gray-200">
+        <div className="space-y-6 pt-4 border-t border-gray-200 dark:border-gray-700">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Mês da Viagem (Opcional)</label>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Mês da Viagem (Opcional)</label>
             <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
                 {months.map(m => (
                     <button
@@ -138,7 +140,7 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion
                         className={`w-full text-center px-2 py-2 rounded-md text-sm font-medium border transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 ${
                             month === m
                                 ? 'bg-blue-600 text-white border-blue-700'
-                                : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 hover:border-gray-300'
+                                : 'bg-gray-100 text-gray-700 border-gray-200 hover:bg-gray-200 hover:border-gray-300 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600 dark:hover:bg-gray-600 dark:hover:border-gray-500'
                         }`}
                         aria-pressed={month === m}
                     >
@@ -150,10 +152,10 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-                <label htmlFor="budget" className="block text-sm font-medium text-gray-700 mb-1">Orçamento (Opcional)</label>
+                <label htmlFor="budget" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Orçamento (Opcional)</label>
                 <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <span className="text-gray-500 sm:text-sm">R$</span>
+                        <span className="text-gray-500 dark:text-gray-400 sm:text-sm">R$</span>
                     </div>
                     <input
                         type="number"
@@ -162,18 +164,18 @@ const TravelForm: React.FC<TravelFormProps> = ({ onSubmit, isLoading, suggestion
                         onChange={(e) => setBudget(e.target.value ? parseInt(e.target.value, 10) : '')}
                         placeholder="2000"
                         min="0"
-                        className="w-full pl-9 pr-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                        className="w-full pl-9 pr-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 dark:placeholder-gray-400 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                     />
                 </div>
             </div>
             <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Tipo de Viajante (Opcional)</label>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tipo de Viajante (Opcional)</label>
                 <div className="relative">
                 <select
                     id="travelerType"
                     value={travelerType}
                     onChange={(e) => setTravelerType(e.target.value as any)}
-                    className="w-full px-4 py-2 pr-8 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white text-gray-900 appearance-none"
+                    className="w-full px-4 py-2 pr-8 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-200 appearance-none"
                 >
                     <option value="">Selecione...</option>
                     <option value="sozinho">Sozinho</option>

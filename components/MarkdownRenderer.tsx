@@ -23,7 +23,7 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ text }) => {
   const flushList = () => {
     if (currentListItems.length > 0) {
       renderableElements.push(
-        <ul key={`ul-${renderableElements.length}`} className="list-disc list-inside space-y-2 mb-4 pl-4 text-gray-700">
+        <ul key={`ul-${renderableElements.length}`} className="list-disc list-inside space-y-2 mb-4 pl-4 text-gray-700 dark:text-gray-300">
           {currentListItems.map((item, index) => (
             <li key={index}>{item}</li>
           ))}
@@ -38,21 +38,21 @@ const MarkdownRenderer: React.FC<MarkdownRendererProps> = ({ text }) => {
 
     if (trimmedLine.startsWith('### ')) {
         flushList();
-        renderableElements.push(<h3 key={index} className="text-xl font-bold text-blue-700 mt-6 mb-3 pt-2 border-t border-gray-200">{parseInlineFormatting(trimmedLine.substring(4))}</h3>);
+        renderableElements.push(<h3 key={index} className="text-xl font-bold text-blue-700 dark:text-blue-400 mt-6 mb-3 pt-2 border-t border-gray-200 dark:border-gray-700">{parseInlineFormatting(trimmedLine.substring(4))}</h3>);
     } else if (trimmedLine.startsWith('## ')) {
         flushList();
-        renderableElements.push(<h2 key={index} className="text-2xl font-bold text-gray-800 mt-8 mb-4 pb-2 border-b-2 border-blue-200">{parseInlineFormatting(trimmedLine.substring(3))}</h2>);
+        renderableElements.push(<h2 key={index} className="text-2xl font-bold text-gray-800 dark:text-gray-100 mt-8 mb-4 pb-2 border-b-2 border-blue-200 dark:border-blue-800">{parseInlineFormatting(trimmedLine.substring(3))}</h2>);
     } else if (trimmedLine.startsWith('# ')) {
         flushList();
-        renderableElements.push(<h1 key={index} className="text-3xl font-extrabold text-gray-900 mb-6 text-center">{parseInlineFormatting(trimmedLine.substring(2))}</h1>);
+        renderableElements.push(<h1 key={index} className="text-3xl font-extrabold text-gray-900 dark:text-gray-50 mb-6 text-center">{parseInlineFormatting(trimmedLine.substring(2))}</h1>);
     } else if (trimmedLine.startsWith('* ') || trimmedLine.startsWith('- ')) {
         currentListItems.push(parseInlineFormatting(trimmedLine.substring(2)));
     } else if (['Manhã:', 'Tarde:', 'Noite:'].some(s => trimmedLine.startsWith(s))) {
         flushList();
-        renderableElements.push(<h4 key={index} className="text-md font-semibold text-gray-600 mt-4 mb-2 uppercase tracking-wider">{parseInlineFormatting(trimmedLine)}</h4>);
+        renderableElements.push(<h4 key={index} className="text-md font-semibold text-gray-600 dark:text-gray-400 mt-4 mb-2 uppercase tracking-wider">{parseInlineFormatting(trimmedLine)}</h4>);
     } else if (trimmedLine.length > 0) {
         flushList();
-        renderableElements.push(<p key={index} className="mb-4 text-gray-700 leading-relaxed">{parseInlineFormatting(trimmedLine)}</p>);
+        renderableElements.push(<p key={index} className="mb-4 text-gray-700 dark:text-gray-300 leading-relaxed">{parseInlineFormatting(trimmedLine)}</p>);
     } else {
         flushList();
     }
